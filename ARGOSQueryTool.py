@@ -22,24 +22,52 @@ fileObj.close()
 dateDict = {}
 locationDict = {}
 
-# Use a for loop to read each line, one at a time, until the list is exhausted
-for lineString in lineStrings:
+try:
 
-    # Use the split command to parse the items in lineString into a list object
-    lineData = lineString.split("\t")
+    # Use a for loop to read each line, one at a time, until the list is exhausted
+    for lineString in lineStrings:
 
-    # Assign variables to specfic items in the list
-    recordID = lineData[0]              # ARGOS tracking record ID
-    obsDateTime = lineData[2]           # Observation date and time (combined)
-    obsDate = obsDateTime.split()[0]    # Observation date - first item in obsDateTime list object
-    obsTime = obsDateTime.split()[1]    # Observation time - second item in obsDateTime list object
-    obsLC = lineData[3]                 # Observation Location Class
-    obsLat = lineData[5]                # Observation Latitude
-    obsLon = lineData[6]                # Observation Longitude
+        # Use the split command to parse the items in lineString into a list object
+        lineData = lineString.split("\t")
 
-    # Add values to dictionary
-    dateDict[recordID] = obsDateTime   
-    locationDict[recordID] = (obsLat, obsLon) 
+        # Assign variables to specfic items in the list
+        recordID = lineData[0]              # ARGOS tracking record ID
+        obsDateTime = lineData[2]           # Observation date and time (combined)
+        obsDate = obsDateTime.split()[0]    # Observation date - first item in obsDateTime list object
+        obsTime = obsDateTime.split()[1]    # Observation time - second item in obsDateTime list object
+        obsLC = lineData[3]                 # Observation Location Class
+        obsLat = lineData[5]                # Observation Latitude
+        obsLon = lineData[6]                # Observation Longitude
 
-# Indicate script is complete
-print ("Finished")
+        #Filter records that get added to the dictionary
+        if obsLC in ("1","2","3"):
+
+            # Add values to dictionary
+            dateDict[recordID] = obsDate
+            locationDict[recordID] = (obsLat, obsLon) 
+
+    # Indicate script is complete
+    print ("Finished")
+
+
+    #Ask for a date
+    userDate = input("Enter a date (M/D/YYYY):")
+
+    #check the date
+    if not "/" in userDate:
+        print("wrong format")
+
+    #create empty key list
+    keyList = []
+
+    #loop through date dictionary
+    for k, v in dateDict.items():
+        #see if the date matches the user date
+        if v== userDate:
+            keyList.append(k)
+    for key in keyList:
+        print (locationDict[key])
+
+except:
+    print("there was an error")
+    
